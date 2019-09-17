@@ -1,4 +1,4 @@
-QT += core gui widgets
+QT += core gui widgets serialport
 
 TARGET = PhytronShell
 
@@ -9,5 +9,6 @@ SOURCES += \
     src/main.cpp
 
 HEADERS += \
-    src/maindialog.h
+    src/maindialog.h \
+    src/phymotion.h
 
