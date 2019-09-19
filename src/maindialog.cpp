@@ -24,9 +24,11 @@ MainDialog::MainDialog(QWidget *parent) : QDialog(parent)
     spinBox_addr->setDisplayIntegerBase(16);
     spinBox_addr->setMaximumWidth(40);
 
+    //low1Layout->addWidget(new QLabel("addr:"));
     low1Layout->addWidget(spinBox_addr);
     low1Layout->addWidget(combo_box);
     low1Layout->addWidget(button_refresh);
+    //low1Layout->addStretch(0);
     low2Layout->addWidget(new QLabel("command: "));
     low2Layout->addWidget(line_command);
     low2Layout->addWidget(button_send);
