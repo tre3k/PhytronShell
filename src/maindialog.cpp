@@ -15,6 +15,7 @@ MainDialog::MainDialog(QWidget *parent) : QDialog(parent)
     button_refresh->setMaximumWidth(30);
     button_send = new QPushButton("send");
     button_send->setMaximumWidth(50);
+    button_send->setShortcut(QKeySequence(Qt::Key_Return));
     line_command = new QLineEdit();
     text_out = new QTextEdit();
     text_out->setReadOnly(true);
@@ -42,8 +43,10 @@ MainDialog::MainDialog(QWidget *parent) : QDialog(parent)
             this,SLOT(serialRefresh()));
     connect(button_send,SIGNAL(clicked(bool)),
             this,SLOT(serialSend()));
+    connect(&serial_port,SIGNAL(readyRead()),
+            this,SLOT(readResponse()));
 
-    text_out->setText(QTime::currentTime().toString());
+    list_buffer.clear();
 }
 
 MainDialog::~MainDialog(){
@@ -66,10 +69,37 @@ void MainDialog::serialSend(){
     if(!serial_port.isOpen()){
         if(!serial_port.open(QIODevice::ReadWrite)){
             QMessageBox::critical(nullptr,"Error open port","Error open port: "+combo_box->currentText());
+            return;
         }
+        serial_port.setBaudRate(115200);
     }
 
-    qDebug() << PhyMotion::setBuffer(spinBox_addr->value(),line_command->text().toUtf8());
 
+   // PhyMotion::getBuffer(spinBox_addr->value(),line_command->text().toUtf8());
+    QByteArray buffer = PhyMotion::getBuffer(spinBox_addr->value(),line_command->text().toUtf8());
+    addText("<font color=\"green\">"+QTime::currentTime().toString()
+            +"."+QString::number(QTime::currentTime().currentTime().msec())
+            +"</font> <b>SEND:</b> "+PhyMotion::parseBuffer(buffer));
+    addText("&nbsp;&nbsp;<font color=\"grey\">command: </font>"+line_command->text());
+    serial_port.write(buffer);
+}
+
+void MainDialog::readResponse(){
+    QByteArray buffer;
+    QByteArray out;
+    buffer.append(serial_port.readAll());
+
+    addText("<font color=\"green\">"+QTime::currentTime().toString()
+            +"."+QString::number(QTime::currentTime().currentTime().msec())
+            +"</font> <b>RESPONSE:</b> "+PhyMotion::parseBuffer(buffer));
+    for(int i=0;i<buffer.size();i++){
+        if(buffer.at(i)==':') break;
+        if(!(buffer.at(i) == '\x02' ||
+             buffer.at(i) == '\x03' ||
+             buffer.at(i) == '\x06' ||
+             buffer.at(i) == '\x15')) out.append(buffer.at(i));
+    }
+    if(out.size()!=0) addText("&nbsp;&nbsp;<font color=\"grey\">return value: </font>"+QString(out));
+    addText("");
 
 }
