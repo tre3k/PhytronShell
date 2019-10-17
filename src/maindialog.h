@@ -15,6 +15,8 @@
 #include <QSpinBox>
 #include <QMessageBox>
 #include <QScrollBar>
+#include <QThread>
+#include <QTcpSocket>
 
 #include "phymotion.h"
 
@@ -31,11 +33,17 @@ private:
     QComboBox *combo_box;
     QPushButton *button_send;
     QPushButton *button_refresh;
+    QPushButton *button_ReadAllParams;
     QLineEdit *line_command;
+    QLineEdit *line_ip_addr;
+    QSpinBox *spin_port;
     QTextEdit *text_out;
     QSpinBox *spinBox_addr;
 
     QSerialPort serial_port;
+
+    QTcpSocket tcpSock;
+    bool tcp_ip = false;
 
     QVector<QString> list_buffer;
 
@@ -60,6 +68,7 @@ signals:
 public slots:
     void serialRefresh();
     void serialSend();
+    void readAllParams();
     void readResponse();
 };
 
