@@ -39,7 +39,7 @@ MainDialog::MainDialog(QWidget *parent) : QDialog(parent)
     low1Layout->addWidget(spinBox_addr);
     low1Layout->addWidget(combo_box);
     low1Layout->addWidget(button_refresh);
-    low1Layout->addWidget(button_ReadAllParams);
+    //low1Layout->addWidget(button_ReadAllParams); //reservation
     //low1Layout->addStretch(0);
     low2Layout->addWidget(new QLabel("command: "));
     low2Layout->addWidget(line_command);
