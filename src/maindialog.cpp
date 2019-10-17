@@ -60,7 +60,7 @@ MainDialog::MainDialog(QWidget *parent) : QDialog(parent)
             this,SLOT(serialSend()));
     connect(&serial_port,SIGNAL(readyRead()),
             this,SLOT(readResponse()));
-    connect(&tcpSock,SIGNAL(readyRead()),
+    connect(&tcp_sock,SIGNAL(readyRead()),
             this,SLOT(readResponse()));
     connect(button_ReadAllParams,SIGNAL(clicked(bool)),
             this,SLOT(readAllParams()));
@@ -83,7 +83,7 @@ void MainDialog::serialRefresh(){
 void MainDialog::serialSend(){
     if(line_ip_addr->text()!="") tcp_ip = true;
     if(tcp_ip){
-        tcpSock.connectToHost(line_ip_addr->text(),spin_port->value());
+        tcp_sock.connectToHost(line_ip_addr->text(),spin_port->value());
     }else{
         if(serial_port.portName()!=combo_box->currentText()){
             serial_port.close();
@@ -106,7 +106,7 @@ void MainDialog::serialSend(){
             +"</font> <b>SEND:</b> "+PhyMotion::parseBuffer(buffer));
     addText("&nbsp;&nbsp;<font color=\"grey\">command: </font>"+line_command->text());
     if(tcp_ip){
-        tcpSock.write(buffer);
+        tcp_sock.write(buffer);
     }else{
         serial_port.write(buffer);
     }
@@ -116,7 +116,7 @@ void MainDialog::readResponse(){
     QByteArray buffer;
     QByteArray out;
     if(tcp_ip){
-
+        buffer.append(tcp_sock.readAll());
     }else{
         buffer.append(serial_port.readAll());
     }

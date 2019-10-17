@@ -42,7 +42,7 @@ private:
 
     QSerialPort serial_port;
 
-    QTcpSocket tcpSock;
+    QTcpSocket tcp_sock;
     bool tcp_ip = false;
 
     QVector<QString> list_buffer;
