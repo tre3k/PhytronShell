@@ -70,6 +70,8 @@ MainDialog::MainDialog(QWidget *parent) : QDialog(parent)
 
 MainDialog::~MainDialog(){
     serial_port.close();
+    tcp_sock.disconnect();
+    tcp_sock.close();
 }
 
 void MainDialog::serialRefresh(){
@@ -83,6 +85,7 @@ void MainDialog::serialRefresh(){
 void MainDialog::serialSend(){
     if(line_ip_addr->text()!="") tcp_ip = true;
     if(tcp_ip){
+        //tcp_sock.disconnect()
         tcp_sock.connectToHost(line_ip_addr->text(),spin_port->value());
     }else{
         if(serial_port.portName()!=combo_box->currentText()){
